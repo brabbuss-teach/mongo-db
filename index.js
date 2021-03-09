@@ -17,11 +17,15 @@ const courseSchema = new mongoose.Schema({
 const Course = mongoose.model("Course", courseSchema)
 
 async function getCourses() {
-  const courses = await Course
-    .find({tags:{$in:'backend'}})
-    .sort({name:1})
-    .select({name: 1, author: 1})
-  console.log(courses)
+  return await Course
+    .find({tags: 'backend', isPublished: true})
+    .sort('name')
+    .select('name author')
 }
 
-getCourses()
+async function run() {
+  const courses = await getCourses()
+  console.log(courses);
+}
+
+run()
