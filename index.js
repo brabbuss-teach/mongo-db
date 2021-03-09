@@ -16,16 +16,28 @@ const courseSchema = new mongoose.Schema({
 
 const Course = mongoose.model("Course", courseSchema)
 
-async function getCourses() {
+async function getBackendCourses() {
   return await Course
     .find({tags: 'backend', isPublished: true})
     .sort('name')
     .select('name author')
 }
 
+async function getAllCourses() {
+  return await Course
+    // .find({isPublished: true, tags: { $in: ['frontend', 'backend']}}) // on a single line or two lines with 'or' below
+    .find({isPublished: true})
+    .or([{tags: 'frontend'}, {tags: 'backend'}])
+    .sort('-price')
+    .select('name author price')
+}
+
 async function run() {
-  const courses = await getCourses()
-  console.log(courses);
+  const backendCourses = await getBackendCourses()
+  const allCourses = await getAllCourses()
+ 
+  console.log("All Courses", allCourses);
+  console.log("Backend Courses", backendCourses);
 }
 
 run()
